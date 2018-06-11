@@ -1,6 +1,6 @@
 # Basic Sample Business Network
 
-> This is the "Hello World" of Hyperledger Composer samples, which demonstrates the core functionality of Hyperledger Composer by changing the value of an asset.
+> This example is based on the "Hello World" of Hyperledger Composer samples, which demonstrates the core functionality of Hyperledger Composer by changing the value of an asset.
 
 This business network defines:
 
@@ -9,14 +9,13 @@ This business network defines:
 
 **Asset**
 `RepWallet`
+`Meetup`
 
 **Transaction**
-`UpdateWallet`
+`RegisterToMeetup`
+`AttendMeetup`
 
-**Event**
-`Update`
-
-SampleAssets are owned by a SampleParticipant, and the value property on a SampleAsset can be modified by submitting a SampleTransaction. The SampleTransaction emits a SampleEvent that notifies applications of the old and new values for each modified SampleAsset.
+RepWallet are owned by Users, and the value property on a RepWallet can be modified by submitting a RegisterToMeetup or AttendMeetup transaction. 
 
 To test this Business Network Definition in the **Test** tab:
 
@@ -42,17 +41,52 @@ Create a `RepWallet` asset:
 }
 ```
 
-Submit a `UpdateWallet` transaction:
+Create a `Meetup` asset:
 
 ```
 {
-  "$class": "org.example.basic.UpdateWallet",
-  "asset": "resource:org.example.basic.RepWallet#repWalletId:1",
-  "newValue": 12
+  "$class": "org.example.basic.Meetup",
+  "meetupId": "5658",
+  "meetupDate": "2018-06-11T10:24:30.027Z",
+  "location": "Nice Location",
+  "organizers": ["resource:org.example.basic.User#Toby"],
+  "listAttendees": []
 }
 ```
 
-After submitting this transaction, you should now see the transaction in the Transaction Registry and that a `SampleEvent` has been emitted. As a result, the value of the `assetId:1` should now be `new value` in the Asset Registry.
+Submit a `RegisterToMeetup` transaction:
+
+```
+{
+  "$class": "org.example.basic.RegisterToMeetup",
+  "meetup": "resource:org.example.basic.Meetup#5658",
+  "user": {
+    "$class": "org.example.basic.RegisteredUser",
+    "user": "resource:org.example.basic.User#Toby",
+    "status": "BOOKED"
+  },
+  "wallet": "resource:org.example.basic.RepWallet#1"
+}
+```
+
+After submitting this transaction, you should now see the transaction in the Transaction Registry. As a result, the value of the `assetId:1` should now be changed in the Asset Registry.
+
+Submit a `AttendMeetup` transaction:
+
+```
+{
+  "$class": "org.example.basic.RegisterToMeetup",
+  "meetup": "resource:org.example.basic.Meetup#5658",
+  "user": {
+    "$class": "org.example.basic.RegisteredUser",
+    "user": "resource:org.example.basic.User#Toby",
+    "status": "ATTENDED"
+  },
+  "wallet": "resource:org.example.basic.RepWallet#1"
+}
+```
+
+After submitting this transaction, you should now see the transaction in the Transaction Registry. As a result, the value of the `assetId:1` should now be changed in the Asset Registry.
 
 Congratulations!
 
