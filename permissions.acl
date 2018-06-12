@@ -32,7 +32,15 @@ rule EverybodyCanRegisterToMeetup {
     action: ALLOW
 }
 
-rule EverybodyCanUpdateToMeetup {
+rule EverybodyCanCreateMeetup {
+    description: "Allow all participants to register to meetups"
+    participant: "org.example.basic.User"
+    operation: CREATE
+    resource: "org.example.basic.Meetup"
+    action: ALLOW
+}
+
+rule EverybodyCanUpdateMeetup {
     description: "Allow all participants to register to meetups"
     participant: "org.example.basic.User"
     operation: UPDATE
